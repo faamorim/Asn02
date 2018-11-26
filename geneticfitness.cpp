@@ -68,6 +68,9 @@ Tour GeneticFitness::crossOver(vector<Tour> parents){
     return Tour{cities, false};
 }
 
+/* Repeated mutation by chance (up to a maximum of the number of
+ * cities in the tour.
+ */
 Tour GeneticFitness::mutate(Tour t){
     vector<City> cities = t.getTour();
     uniform_int_distribution<int> indexDistribution(0, citiesInTour - 1);
@@ -85,6 +88,8 @@ Tour GeneticFitness::mutate(Tour t){
     return Tour{cities};
 }
 
+/* Calculate the next generation
+ */
 void GeneticFitness::nextGeneration(){
     vector<Tour> newPopulation;
     auto it = population.begin();

@@ -7,7 +7,7 @@
 
 
 
-Map::Map(int width, int height, int num) : Map(){
+Map::Map(int width, int height, int num){
     uniform_int_distribution<int> longitudeDistribution{0,height};
     uniform_int_distribution<int> latitudeDistribution{0,width};
     CityNameGenerator cityNameGenerator{engine};

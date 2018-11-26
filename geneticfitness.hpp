@@ -20,11 +20,13 @@ class GeneticFitness {
     int maxIterations;
 public:
     GeneticFitness(vector<Tour> pop, int nCities, int nElites, int poolSize, int nParents, int mutRate, int iter);
-
+    void run();
     vector<Tour> population;
     void nextGeneration();
     Tour crossOver(vector<Tour> parents);
     Tour mutate(Tour t);
+    vector<Tour> getParents();
+    void sortPop(vector<Tour>& pop);
 };
 
 

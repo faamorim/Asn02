@@ -6,8 +6,6 @@
 #include <iostream>
 
 
-Map::Map(){
-}
 
 Map::Map(int width, int height, int num) : Map(){
     uniform_int_distribution<int> longitudeDistribution{0,height};
@@ -16,6 +14,7 @@ Map::Map(int width, int height, int num) : Map(){
     for(int i = 0; i < num; ++i) {
         City c{longitudeDistribution(engine), latitudeDistribution(engine), cityNameGenerator.generateName()};
         cities.push_back(c);
+        cout << c.name << ": " << c.latitude << ", " << c.longitude << endl;
     }
 };
 

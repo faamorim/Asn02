@@ -15,10 +15,11 @@
 class Tour {
 private:
     vector<City> tour;
-    double totalDistanceSquare;
+    double totalDistance;
+    void calculateDistance();
 public:
     Tour(const vector<City>& cities, int length, bool randomize = false);
-    Tour(const vector<City>& cities, bool randomize = false);
+    explicit Tour(const vector<City>& cities, bool randomize = false);
     Tour(const Tour& copy);
     Tour(const Map& map, int length, bool randomize = false);
     vector<City> getTour() const;

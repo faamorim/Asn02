@@ -14,8 +14,8 @@
 
 using namespace std;
 
-#define BASE_MIN_SYLLABLES 1
-#define BASE_MAX_SYLLABLES 2
+#define BASE_MIN_SYLLABLES 2
+#define BASE_MAX_SYLLABLES 4
 #define BASE_FILE_NAME "Syllables.txt"
 
 

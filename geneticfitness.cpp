@@ -7,11 +7,26 @@
 GeneticFitness::GeneticFitness(vector<Tour> pop, int nCities, int nElites, int poolSize, int nParents, int mutRate, int iter) :
             population(move(pop)), citiesInTour(nCities), numberOfElites(nElites), parentsPoolSize(poolSize),
             numberOfParents(nParents), mutationRate(mutRate), maxIterations(iter){
-    sort(population.begin(), population.end(),
-         [](const Tour & t1, const Tour & t2) -> bool
-         {
-             return t1.getTourDistance() < t2.getTourDistance();
-         });
+    sortPop(population);
+}
+
+void GeneticFitness::run(){
+    cout << "Starting!" << endl;
+    cout << "Max iterations: " << maxIterations << endl;
+    double currentBest = population[0].getTourDistance();
+    cout << "Starting best: " << population[0].getTourDistance() << endl;
+    int count = 0;
+    for(int i = 0; i < maxIterations; ++i){
+        count++;
+        nextGeneration();
+        if(population[0].getTourDistance() < currentBest || count > 500){
+            currentBest = population[0].getTourDistance();
+            cout << "Best as of iteration #" << (i+1) << ": " << population[0].getTourDistance() << endl;
+            count = 0;
+        }
+    }
+    cout << "All time best: " << population[0].getTourDistance() << endl;
+    cout << population[0].toString() << endl;
 }
 
 Tour GeneticFitness::crossOver(vector<Tour> parents){
@@ -62,12 +77,9 @@ Tour GeneticFitness::mutate(Tour t){
         mutations++;
     }
     while(mutations > 0){
-        int index = indexDistribution(engine);
-        if (index < citiesInTour - 1){
-            swap(cities[index], cities[index+1]);
-        } else {
-            swap(cities[index], cities[0]);
-        }
+        int index1 = indexDistribution(engine);
+        int index2 = indexDistribution(engine);
+        swap(cities[index1], cities[index2]);
         mutations--;
     }
     return Tour{cities};
@@ -82,15 +94,37 @@ void GeneticFitness::nextGeneration(){
         elites++;
     }
     for(; it != population.end(); ++it){
+        newPopulation.push_back(mutate(crossOver(getParents())));
+    }
+    population = newPopulation;
+    sortPop(population);
+}
+
+vector<Tour> GeneticFitness::getParents(){
+    int parentsSize = numberOfParents < population.size() ? numberOfParents : (int)population.size();
+    vector<Tour> parents;
+    for(int par = 0; par < parentsSize; ++par) {
         vector<int> popuIndexes;
         for(int i = 0; i < population.size(); ++i){
             popuIndexes.push_back(i);
         }
         vector<Tour> parentPool;
-        for(int p = 0; p < parentsPoolSize; ++p){
-            uniform_int_distribution<int> indexDist{0, (int)popuIndexes.size() - 1};
+        for (int pool = 0; pool < parentsPoolSize; ++pool) {
+            uniform_int_distribution<int> indexDist{0, (int) popuIndexes.size() - 1};
             int index = indexDist(engine);
+            parentPool.push_back(population[popuIndexes[index]]);
+            popuIndexes.erase(find(popuIndexes.begin(), popuIndexes.end(), popuIndexes[index]));
         }
+        sortPop(parentPool);
+        parents.push_back(parentPool[0]);
     }
+    return parents;
 }
 
+
+void GeneticFitness::sortPop(vector<Tour>& pop){
+    sort(pop.begin(), pop.end(),
+         [](const Tour &t1, const Tour &t2) -> bool {
+             return t1.getTourDistance() < t2.getTourDistance();
+         });
+}

@@ -16,7 +16,6 @@ using namespace std;
 class Map {
 private:
     vector<City> cities;
-    Map();
 public:
     vector<City> getCities() const;
     Map(int width, int height, int num);
